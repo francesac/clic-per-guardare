@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Clic per guardare",
+  "version": "1.0.0",
+  "description": "Su Instagram nessun video parte da solo: parte quando lo clicchi.",
+  "minimum_chrome_version": "111",
+  "homepage_url": "https://github.com/francesac/clic-per-guardare",
+  "icons": {
+    "16": "icone/16.png",
+    "32": "icone/32.png",
+    "48": "icone/48.png",
+    "128": "icone/128.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Clic per guardare"
+  },
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["https://*.instagram.com/*"],
+      "js": ["blocco.js"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://*.instagram.com/*"],
+      "js": ["ponte.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ]
+}

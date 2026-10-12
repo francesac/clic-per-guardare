@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="../icone/48.png" alt="" width="32" height="32">
+    <div>
+      <h1>Clic per guardare</h1>
+      <p>Su Instagram i video partono solo se li clicchi.</p>
+    </div>
+  </header>
+
+  <label class="riga">
+    <span>
+      <strong>Attiva</strong>
+      <small id="stato">I video aspettano il tuo clic</small>
+    </span>
+    <input type="checkbox" id="attiva" role="switch">
+  </label>
+
+  <label class="riga">
+    <span>
+      <strong>Anche nelle storie</strong>
+      <small>Spenta: una storia che apri parte da sola</small>
+    </span>
+    <input type="checkbox" id="anche_storie" role="switch">
+  </label>
+
+  <script src="popup.js"></script>
+</body>
+</html>
