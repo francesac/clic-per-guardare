@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Clic per guardare",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Su Instagram nessun video parte da solo, e gli argomenti che non vuoi spariscono dal feed.",
   "minimum_chrome_version": "111",
   "homepage_url": "https://github.com/francesac/clic-per-guardare",

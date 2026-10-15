@@ -43,8 +43,9 @@
   function setaccia(connessione) {
     if (!Array.isArray(connessione?.edges)) return;
     connessione.edges = connessione.edges.filter((edge) => {
-      const m = edge?.node?.media;
-      if (!m) return true;   // pubblicità, suggerimenti, storie: non sono post, restano
+      // I post di chi segui stanno in node.media, i «Suggeriti per te» in node.explore_story.media
+      const m = edge?.node?.media || edge?.node?.explore_story?.media;
+      if (!m) return true;   // pubblicità e caroselli di profili da seguire: non sono post, restano
       const { grezzo, autori } = leggi(m);
       const esito = giudica(grezzo, autori, impostazioni);
       if (!esito) return true;
