@@ -1,8 +1,10 @@
 // filtro.js — la rete di sicurezza dei reel: se un reel di un argomento spento è sfuggito a setaccio.js
 // (che li toglie dai dati prima che Instagram li disegni), lo nasconde nella pagina.
 //
-// Gira nel mondo isolato dell'estensione: legge quello che il reel dice di sé — autore, didascalia, la
-// descrizione automatica delle immagini — e lo passa a giudice.js. Niente esce dal computer.
+// Gira dentro la pagina (mondo MAIN), insieme a setaccio.js: legge quello che il reel dice di sé — autore,
+// didascalia, la descrizione automatica delle immagini — e lo passa a giudice.js. Niente esce dal computer.
+// Sta nello stesso mondo di setaccio perché Chrome carica argomenti.js e giudice.js una volta sola per pagina:
+// elencati anche nel mondo isolato, lì non arrivavano, e questo file si fermava alla prima riga.
 //
 // ⛔ Solo nei reel, mai nel feed: il feed tiene in pagina una decina di post e misura il posto di ognuno, e un
 // post nascosto qui gli sballa il conto (il feed si svuota o torna su da solo). Nel feed lavora solo setaccio.js.
@@ -78,11 +80,7 @@
   function conta(post) {
     if (contati.has(post)) return;
     contati.add(post);
-    const oggi = new Date().toLocaleDateString('sv');   // 2026-10-15
-    chrome.storage.local.get({ nascosti: { giorno: oggi, n: 0 } }, ({ nascosti }) => {
-      const n = nascosti.giorno === oggi ? nascosti.n + 1 : 1;
-      chrome.storage.local.set({ nascosti: { giorno: oggi, n } });
-    });
+    document.dispatchEvent(new CustomEvent('clic-per-guardare:nascosto'));   // lo conta ponte.js
   }
 
   // ── 4. si parte, e si riguarda quando Instagram aggiunge o cambia qualcosa ─────────────
@@ -96,12 +94,13 @@
     .observe(document.documentElement, { childList: true, subtree: true, characterData: true });
 
   function applica(imp) {
-    impostazioni = imp;
+    impostazioni = { ...PREDEFINITE, ...imp };
     mostraTutti();   // si riparte da capo: un argomento spento fa tornare i suoi post
     letti = new WeakMap();
     giro();
   }
 
-  chrome.storage.sync.get(PREDEFINITE, applica);
-  chrome.storage.onChanged.addListener((_, area) => { if (area === 'sync') chrome.storage.sync.get(PREDEFINITE, applica); });
+  // Le impostazioni le manda ponte.js; fino ad allora vale l'ultima copia lasciata da setaccio.js nel localStorage.
+  try { applica(JSON.parse(localStorage.getItem('clic-per-guardare:impostazioni') || '{}')); } catch {}
+  document.addEventListener('clic-per-guardare:impostazioni', (e) => { try { applica(JSON.parse(e.detail)); } catch {} });
 })();
