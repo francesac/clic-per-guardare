@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Clic per guardare",
-  "version": "1.0.0",
-  "description": "Su Instagram nessun video parte da solo: parte quando lo clicchi.",
+  "version": "1.1.0",
+  "description": "Su Instagram nessun video parte da solo, e gli argomenti che non vuoi spariscono dal feed.",
   "minimum_chrome_version": "111",
   "homepage_url": "https://github.com/francesac/clic-per-guardare",
   "icons": {
@@ -29,6 +29,11 @@
       "js": ["ponte.js"],
       "run_at": "document_start",
       "all_frames": true
+    },
+    {
+      "matches": ["https://www.instagram.com/*"],
+      "js": ["argomenti.js", "filtro.js"],
+      "run_at": "document_start"
     }
   ]
 }

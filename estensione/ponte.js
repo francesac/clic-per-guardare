@@ -9,5 +9,5 @@ function manda() {
 }
 
 document.addEventListener('clic-per-guardare:pronto', manda);
-chrome.storage.onChanged.addListener(manda);
+chrome.storage.onChanged.addListener((_, area) => { if (area === 'sync') manda(); });
 manda();
