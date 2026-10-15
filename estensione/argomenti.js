@@ -9,6 +9,7 @@
 //   contesto — parole del mestiere che da sole dicono poco («gol», «partita», «stadio»):
 //              ne servono due diverse, o una insieme a un nome ambiguo
 //   account  — chi pubblica: un post di @433 è calcio anche se la didascalia è solo un'emoji
+//   account_contiene — pezzi di nome utente che bastano da soli (@calcio_mercato_live, @footballdaily…)
 globalThis.CPG_ARGOMENTI = {
   calcio: {
     nome: 'Calcio',
@@ -18,7 +19,7 @@ globalThis.CPG_ARGOMENTI = {
       '⚽',
       // il gioco
       'calciatore', 'calciatori', 'calciatrice', 'calciatrici', 'calciomercato', 'fantacalcio', 'fuorigioco',
-      'calcio di rigore', 'calcio d angolo', 'calcio di punizione', 'golazo', 'golazzo', 'scudetto', 'pallone d oro',
+      'album panini', 'figurine panini', 'calcio di rigore', 'calcio d angolo', 'calcio di punizione', 'golazo', 'golazzo', 'scudetto', 'pallone d oro',
       'ballon d or', 'ballondor', 'football', 'footballer', 'footballers', 'soccer', 'futbol', 'futebol',
       'footballskills', 'footballedits', 'footballedit', 'soccerskills', 'calcioitaliano',
       // i campionati
@@ -36,7 +37,7 @@ globalThis.CPG_ARGOMENTI = {
       // giocatori e allenatori
       'leo messi', 'lionel messi', 'ronaldo', 'cristiano ronaldo', 'cr7', 'mbappe', 'haaland', 'neymar', 'lewandowski', 'lamine yamal',
       'yamal', 'vinicius', 'bellingham', 'salah', 'de bruyne', 'modric', 'harry kane', 'lautaro', 'vlahovic', 'leao',
-      'osimhen', 'kvaratskhelia', 'kvara', 'dybala', 'federico chiesa', 'nicolo barella', 'donnarumma', 'buffon',
+      'osimhen', 'kvaratskhelia', 'kvara', 'de gea', 'kean', 'retegui', 'commisso', 'palladino', 'dybala', 'federico chiesa', 'nicolo barella', 'donnarumma', 'buffon',
       'totti', 'del piero', 'delpiero', 'maldini', 'pirlo', 'baggio', 'ibrahimovic', 'zlatan', 'maradona', 'pele',
       'zidane', 'ronaldinho', 'lukaku', 'pogba', 'griezmann', 'benzema', 'kroos', 'ancelotti', 'mourinho', 'guardiola',
       'klopp', 'spalletti', 'max allegri', 'massimiliano allegri', 'inzaghi', 'antonio conte', 'gasperini', 'de laurentiis',
@@ -66,7 +67,10 @@ globalThis.CPG_ARGOMENTI = {
       'gazzettadellosport', 'corrieredellosport', 'tuttosport', 'skysport', 'dazn_it', 'sportmediaset',
       'cronachedispogliatoio', 'calciatoribrutti', 'fantacalcio', 'transfermarkt', 'sportitalia', 'footballdaily',
       '90min_football', 'sporf', 'troll.football', 'footballtransfers', 'vivoazzurro', 'azzurri',
+      'viola_news', 'violanews', 'firenzeviola', 'fiorentinauno', 'tuttomercatoweb', 'calciomercato.com', 'tmwmagazine',
+      'juventibus', 'milannews.it', 'fcinter1908', 'areanapoli.it', 'forzaroma.info', 'lalaziosiamonoi',
     ],
+    account_contiene: ['calcio', 'football', 'futbol', 'soccer', 'ultras', 'pallone'],
     // frasi che contengono una parola del cassetto ma parlano d'altro: si tolgono dal testo prima di cercare
     eccezioni: ['partita iva', 'partite iva', 'ricco di calcio', 'ricca di calcio', 'calcio e magnesio', 'calcio e vitamina'],
   },

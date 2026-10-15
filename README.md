@@ -92,12 +92,14 @@ In `chrome://extensions` premi **Rimuovi** sulla scheda, poi butta la cartella.
 ## Nascondere un argomento
 
 Per ora c'è un argomento solo, il calcio. L'estensione legge quello che ogni post dice di sé — chi
-lo pubblica, la didascalia, gli hashtag, il titolo dell'audio, la descrizione automatica che
-Instagram dà alle foto — e lo confronta con un elenco di parole. Se è calcio, il post sparisce e
-quello dopo prende il suo posto.
+lo pubblica, la didascalia intera (anche la parte nascosta dietro «altro»), gli hashtag, la
+descrizione automatica che Instagram dà alle foto, che spesso trascrive anche il testo scritto
+sopra — e lo confronta con un elenco di parole. Se è calcio, il post viene tolto prima che
+Instagram lo disegni: per il feed non è mai esistito, e lo scorrimento resta liscio.
 
 - **Quando sparisce** — basta una parola che vuol dire solo calcio («fuorigioco», «Juventus»,
-  #seriea, ⚽), o un account del giro (433, Goal, i club). Le parole che vogliono dire anche altro
+  #seriea, ⚽), o un account del giro (433, Goal, i club, le testate), o un nome utente che lo dice da sé
+  («…calcio…», «…football…», «…pallone…»). Le parole che vogliono dire anche altro
   servono in coppia: «gol» + «Napoli» sì, «Napoli» da solo no, se no sparirebbe ogni foto
   scattata a Napoli. Allo stesso modo «partita IVA» e «ricco di calcio» non contano.
 - **Dove** — nel feed e nella pagina dei reel, cioè dove scorri senza aver scelto. Un post che apri
@@ -151,9 +153,11 @@ lo rincorra. Se apri una finestra di Instagram sopra il feed, è la finestra a c
 | File | Cosa fa |
 |---|---|
 | `estensione/blocco.js` | Ferma i video e disegna il bottone. Gira dentro la pagina, prima di Instagram. |
-| `estensione/ponte.js` | Legge le impostazioni salvate e le passa a `blocco.js`. |
+| `estensione/ponte.js` | Legge le impostazioni salvate e le passa a `blocco.js` e `setaccio.js`. |
 | `estensione/argomenti.js` | Gli argomenti da nascondere e le parole che li riconoscono. |
-| `estensione/filtro.js` | Legge ogni post del feed e dei reel, e fa sparire quelli degli argomenti spenti. |
+| `estensione/giudice.js` | Decide se un post parla di un argomento spento, confrontandolo con `argomenti.js`. |
+| `estensione/setaccio.js` | Toglie i post degli argomenti spenti dai dati del feed e dei reel, prima che Instagram li disegni. |
+| `estensione/filtro.js` | Rete di sicurezza nei reel: nasconde un reel sfuggito al setaccio. |
 | `estensione/popup/` | Il pannello con gli interruttori. |
 | `estensione/manifest.json` | Dice a Chrome dove gira l'estensione e cosa può fare. |
 

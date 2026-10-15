@@ -1,11 +1,11 @@
-// filtro.js — fa sparire dal feed e dai reel i post degli argomenti che hai spento (argomenti.js).
+// filtro.js — la rete di sicurezza dei reel: se un reel di un argomento spento è sfuggito a setaccio.js
+// (che li toglie dai dati prima che Instagram li disegni), lo nasconde nella pagina.
 //
-// Gira nel mondo isolato dell'estensione, non dentro la pagina: non tocca i video, legge solo quello che il post
-// dice di sé — autore, didascalia, hashtag, la descrizione automatica che Instagram dà alle foto («May be an image
-// of … playing soccer») — e lo confronta con le parole di argomenti.js. Niente esce dal computer.
+// Gira nel mondo isolato dell'estensione: legge quello che il reel dice di sé — autore, didascalia, la
+// descrizione automatica delle immagini — e lo passa a giudice.js. Niente esce dal computer.
 //
-// Lavora solo dove scorri senza aver scelto tu: il feed (/) e i reel (/reels/…). Un post che apri tu — un link,
-// un profilo, una finestra sopra il feed — resta com'è.
+// ⛔ Solo nei reel, mai nel feed: il feed tiene in pagina una decina di post e misura il posto di ognuno, e un
+// post nascosto qui gli sballa il conto (il feed si svuota o torna su da solo). Nel feed lavora solo setaccio.js.
 (() => {
   if (globalThis.__clicPerGuardareFiltro) return;
   globalThis.__clicPerGuardareFiltro = true;
@@ -19,44 +19,14 @@
   let letti = new WeakMap();       // post → il testo che aveva l'ultima volta che l'ho letto
   const contati = new WeakSet();   // post già contati fra i nascosti di oggi
 
-  // ── 1. le parole ─────────────────────────────────────────────────────────────────
-  // Tutto minuscolo e senza accenti, ogni segno diventa uno spazio: «#ForzaNapoli!» → « forzanapoli ».
-  // Si cerca « parola », con gli spazi attorno, così «gol» non scatta dentro «golf» né «inter» dentro «internet».
-  const riduci = (s) => ' ' + s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9]+/g, ' ').trim() + ' ';
-  const prepara = (lista) => (lista || []).map((p) => (/[a-z0-9]/i.test(p) ? { p: riduci(p), emoji: false } : { p, emoji: true }));
-  const DIZIONARI = Object.fromEntries(Object.entries(ARGOMENTI).map(([chiave, a]) => [chiave, {
-    forti: prepara(a.forti), ambigui: prepara(a.ambigui), contesto: prepara(a.contesto),
-    eccezioni: (a.eccezioni || []).map(riduci), account: new Set(a.account || []),
-  }]));
-  const trova = (voci, testo, grezzo) => voci.filter(({ p, emoji }) => (emoji ? grezzo : testo).includes(p)).map(({ p }) => p.trim());
-
-  // Basta una parola forte · o un account del giro · o due parole di contesto diverse · o una di contesto
-  // insieme a un nome ambiguo («gol» + «Napoli»). I nomi ambigui da soli non bastano mai.
-  function giudica(testo, grezzo, autori) {
-    for (const [chiave, d] of Object.entries(DIZIONARI)) {
-      if (!impostazioni['nascondi_' + chiave]) continue;
-      let t = testo;
-      for (const e of d.eccezioni) t = t.split(e).join(' ');
-      const account = autori.filter((a) => d.account.has(a));
-      if (account.length) return { chiave, perche: account.map((a) => '@' + a) };
-      const forti = trova(d.forti, t, grezzo);
-      if (forti.length) return { chiave, perche: forti };
-      const contesto = trova(d.contesto, t, grezzo);
-      const ambigui = trova(d.ambigui, t, grezzo);
-      if (contesto.length >= 2 || (contesto.length && ambigui.length)) return { chiave, perche: [...contesto, ...ambigui] };
-    }
-    return null;
-  }
+  const { giudica } = globalThis.CPG_GIUDICE(ARGOMENTI);
 
   // ── 2. i post ───────────────────────────────────────────────────────────────────
-  const qui = () => location.pathname === '/' || location.pathname.startsWith('/reels/');
+  const qui = () => location.pathname.startsWith('/reels/');
 
-  // Nel feed un post è un <article>. Nei reel è la «diapositiva» che contiene un video solo: si risale dal
-  // video finché il genitore ne contiene più d'uno, o finché il genitore è la colonna che scorre.
+  // Un reel è la «diapositiva» che contiene un video solo: si risale dal video finché il genitore ne
+  // contiene più d'uno, o finché il genitore è la colonna che scorre.
   function postDi(v) {
-    const art = v.closest('article');
-    if (art) return art;
     let c = v;
     while (c.parentElement && c.parentElement !== document.body) {
       const p = c.parentElement;
@@ -87,7 +57,7 @@
     const { grezzo, autori } = leggi(post);
     if (letti.get(post) === grezzo) return;   // già letto così: la didascalia non è cambiata
     letti.set(post, grezzo);
-    const esito = giudica(riduci(grezzo), grezzo, autori);
+    const esito = giudica(grezzo, autori, impostazioni);
     if (!esito) return;
     post.setAttribute(SEGNO, esito.chiave);
     post.querySelectorAll('video').forEach((v) => v.pause());
@@ -97,10 +67,7 @@
 
   function giro() {
     if (!impostazioni.attiva || !qui()) return;
-    for (const a of document.querySelectorAll('article')) esamina(a);
-    if (location.pathname.startsWith('/reels/')) {
-      for (const v of document.querySelectorAll('video')) { const p = postDi(v); if (p) esamina(p); }
-    }
+    for (const v of document.querySelectorAll('video')) { const p = postDi(v); if (p) esamina(p); }
   }
 
   function mostraTutti() {
